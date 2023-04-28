@@ -3,6 +3,13 @@
 
 class Player {
 
-	Input* input_ = nullptr;
+public:
+	void Initialize();
+
+	void Update();
+
+	void Draw();
+
+private:
 
 };
