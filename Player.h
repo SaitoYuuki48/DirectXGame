@@ -11,5 +11,6 @@ public:
 	void Draw();
 
 private:
-
+	Input* input_ = nullptr;
+	
 };
