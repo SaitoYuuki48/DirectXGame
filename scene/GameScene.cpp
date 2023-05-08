@@ -16,7 +16,7 @@ void GameScene::Initialize() {
 	//textureHandle_ = TextureManager::Load("sample.png");
 
 	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
+	//worldTransform_.Initialize();
 	////// ビュープロジェクションの初期化
 	//viewProjection_.Initialize();
 	//////モデル
