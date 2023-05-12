@@ -161,3 +161,5 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vecto
 	result = Multiply(scaleMatrix, Multiply(rotateXYZMatrix, translateMatrix));
 	return result;
 }
+
+
