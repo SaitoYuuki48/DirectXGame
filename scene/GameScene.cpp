@@ -4,7 +4,11 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { /*delete model_;*/ }
+GameScene::~GameScene() { 
+	delete model_; 
+	delete player_;
+	delete debugCamera_;
+}
 
 void GameScene::Initialize() {
 
@@ -12,19 +16,38 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	//// ファイル名を指定してテクスチャを読み込む
-	//textureHandle_ = TextureManager::Load("sample.png");
+	// ファイル名を指定してテクスチャを読み込む
+	textureHandle_ = TextureManager::Load("sample.png");
 
-	//ワールドトランスフォームの初期化
-	//worldTransform_.Initialize();
-	////// ビュープロジェクションの初期化
-	//viewProjection_.Initialize();
-	//////モデル
-	//model_ = Model::Create();
+	//// ビュープロジェクションの初期化
+	viewProjection_.Initialize();
+	////モデル
+	model_ = Model::Create();
 
+	// 自キャラの生成
+	player_ = new Player();
+	// 自キャラの初期化
+	player_->Initialize(model_, textureHandle_);
+
+	//デバッグカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	// 自キャラの更新
+	player_->Update();
+	//デバッグカメラ
+	debugCamera_->Update();
+
+	#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+	    
+	}
+    #endif // _DEBUG
+	
+
+
+}
 
 void GameScene::Draw() {
 
@@ -52,6 +75,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	
+	// 自キャラの描画
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

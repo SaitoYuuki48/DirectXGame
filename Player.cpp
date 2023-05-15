@@ -1,36 +1,42 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include <cassert>
 #include <Model.h>
 #include <WorldTransform.h>
+#include "ImGuiManager.h"
 
 #include "Affine.h"
 
 
-void Player::Initialize() 
+void Player::Initialize(Model* model, uint32_t textureHandle) 
 {
 	input_ = Input::GetInstance();
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šú‰»
+	// å¼•æ•°ã‹ã‚‰å—ã‘å–ã£ãŸãƒ¢ãƒ‡ãƒ«ãŒèª­ã¿è¾¼ã¾ã‚Œã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+	assert(model);
+	// å¼•æ•°ã‹ã‚‰ãƒ¢ãƒ‡ãƒ«ã¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹
+	model_ = model;
+	textureHandle_ = textureHandle;
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®åˆæœŸåŒ–
 	worldTransform_.Initialize();
 
-	//x,y,z•ûŒü‚ÌƒXƒP[ƒŠƒ“ƒO‚ðÝ’è
+	//x,y,zæ–¹å‘ã®ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã‚’è¨­å®š
 	worldTransform_.scale_ = {5.0f, 1.0f, 1.0f};
-	//x,y,z•ûŒü‚Ì‰ñ“]‚ðÝ’è
+	//x,y,zæ–¹å‘ã®å›žè»¢ã‚’è¨­å®š
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	//x,y,z‚Ì•ûŒü‚ÌƒXƒP[ƒŠƒ“ƒO‚ðÝ’è
+	//x,y,zã®æ–¹å‘ã®ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã‚’è¨­å®š
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 }
 
 
 void Player::Update() 
 {
-	//ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®ƒxƒNƒgƒ‹
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«
 	Vector3 move = {0, 0, 0};
 
-	//ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®‘¬‚³
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•é€Ÿã•
 	const float kCharacterSpeed = 0.2f;
 
-	//‰Ÿ‚µ‚½•ûŒü‚ÅˆÚ“®ƒxƒNƒgƒ‹‚ð•ÏX(¶‰E)
+	//æŠ¼ã—ãŸæ–¹å‘ã§ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´(å·¦å³)
 	if (input_->PushKey(DIK_LEFT))
 	{
 		move.x -= kCharacterSpeed;
@@ -38,75 +44,49 @@ void Player::Update()
 		move.x += kCharacterSpeed;
 	}
 
-	//‰Ÿ‚µ‚½•ûŒü‚ÅˆÚ“®ƒxƒNƒgƒ‹‚ð•ÏX(ã‰º)
+	//æŠ¼ã—ãŸæ–¹å‘ã§ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´(ä¸Šä¸‹)
 	if (input_->PushKey(DIK_UP))
 	{
-		move.y -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_DOWN)) {
 		move.y += kCharacterSpeed;
+	} else if (input_->PushKey(DIK_DOWN)) {
+		move.y -= kCharacterSpeed;
 	}
 
-	//À•WˆÚ“®(ƒxƒNƒgƒ‹‚Ì‰ÁŽZ)
+	//ç§»å‹•é™ç•Œåº§æ¨™
+	const float kMoveLimitX = 1280;
+	const float kMoveLimitY = 720;
+
+	//ç¯„å›²ã‚’è¶…ãˆãªã„å‡¦ç†
+	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x, + kMoveLimitX);
+	worldTransform_.translation_.y = max(worldTransform_.translation_.y, - kMoveLimitY);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
+
+	//åº§æ¨™ç§»å‹•(ãƒ™ã‚¯ãƒˆãƒ«ã®åŠ ç®—)
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
 
-	////ƒXƒP[ƒŠƒ“ƒOs—ñ‚ðéŒ¾
-	//Matrix4x4 matScale;
-	//
-	//matScale.m[0][0] = worldTransform_.scale_.x;
-	//matScale.m[1][1] = worldTransform_.scale_.y;
-	//matScale.m[2][2] = worldTransform_.scale_.z;
-	//matScale.m[3][3] = 1;
-
-	////XŽ²‰ñ“]s—ñ
-	//Matrix4x4 matRotX;
-
-	//matRotX.m[0][0] = 1;
-	//matRotX.m[1][1] = cosf(worldTransform_.rotation_.x);
-	//matRotX.m[1][2] = sinf(worldTransform_.rotation_.x);
-	//matRotX.m[2][1] = -sinf(worldTransform_.rotation_.x);
-	//matRotX.m[2][2] = cosf(worldTransform_.rotation_.x);
-	//matRotX.m[3][3] = 1;
-
-	////YŽ²‰ñ“]s—ñ
-	//Matrix4x4 matRotY;
-
-	//matRotY.m[0][0] = cosf(worldTransform_.rotation_.y);
-	//matRotY.m[0][2] = -sinf(worldTransform_.rotation_.y);
-	//matRotY.m[1][1] = 1;
-	//matRotY.m[2][0] = sinf(worldTransform_.rotation_.y);
-	//matRotY.m[2][2] = cosf(worldTransform_.rotation_.y);
-	//matRotY.m[3][3] = 1;
-
-	//// ZŽ²‰ñ“]s—ñ
-	//Matrix4x4 matRotZ;
-	//matRotZ.m[0][0] = cosf(worldTransform_.rotation_.z);
-	//matRotZ.m[0][1] = -sinf(worldTransform_.rotation_.z);
-	//matRotZ.m[1][0] = sinf(worldTransform_.rotation_.z);
-	//matRotZ.m[1][1] = cosf(worldTransform_.rotation_.z);
-	//matRotZ.m[2][2] = 1;
-	//matRotZ.m[3][3] = 1;
-
-	//Matrix4x4 matRot = Multiply(matRotX, Multiply(matRotY, matRotZ));
-
-	////•½sˆÚ“®s—ñ‚ðéŒ¾
-	//Matrix4x4 matTrans;
-
-	//matTrans.m[0][0] = 1;
-	//matTrans.m[1][1] = 1;
-	//matTrans.m[2][2] = 1;
-	//matTrans.m[3][0] = worldTransform_.translation_.x;
-	//matTrans.m[3][1] = worldTransform_.translation_.y;
-	//matTrans.m[3][2] = worldTransform_.translation_.z;
-	//matTrans.m[3][3] = 1;
+	// è¡Œåˆ—ã®è»¢é€ã€€è¡Œåˆ—ã®è¨ˆç®—å¾Œã«è¡Œã†
+	worldTransform_.TransferMatrix();
 
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_,worldTransform_.rotation_,worldTransform_.translation_);
 
-	//s—ñ‚Ì“]‘—@s—ñ‚ÌŒvŽZŒã‚És‚¤
-	worldTransform_.TransferMatrix();
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®åº§æ¨™ã‚’ç”»é¢è¡¨ç¤ºã™ã‚‹å‡¦ç†
+	ImGui::Begin("");
+	float playerPos[] = {worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z};
+	ImGui::SliderFloat3("PlayerPos", playerPos, 0.0f, 1.0f);
+
+	worldTransform_.translation_.x = playerPos[0];
+	worldTransform_.translation_.y = playerPos[1];
+	worldTransform_.translation_.z = playerPos[2];
+
+	ImGui::End();
 
 }
 
-void Player::Draw() {}
+void Player::Draw(ViewProjection& viewProjection) 
+{
+	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
