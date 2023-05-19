@@ -53,8 +53,8 @@ void Player::Update()
 	}
 
 	//移動限界座標
-	const float kMoveLimitX = 1280;
-	const float kMoveLimitY = 720;
+	const float kMoveLimitX = 30;
+	const float kMoveLimitY = 20;
 
 	//範囲を超えない処理
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
@@ -74,15 +74,15 @@ void Player::Update()
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_,worldTransform_.rotation_,worldTransform_.translation_);
 
 	//キャラクターの座標を画面表示する処理
-	ImGui::Begin("");
+	ImGui::Begin("Debug");
 	float playerPos[] = {worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z};
-	ImGui::SliderFloat3("PlayerPos", playerPos, 0.0f, 1.0f);
+	ImGui::SliderFloat3("PlayerPos", playerPos, 0.0f, 128.0f);
+	ImGui::End();
 
 	worldTransform_.translation_.x = playerPos[0];
 	worldTransform_.translation_.y = playerPos[1];
 	worldTransform_.translation_.z = playerPos[2];
 
-	ImGui::End();
 
 }
 
