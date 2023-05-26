@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include <cassert>
 #include <Model.h>
 #include <WorldTransform.h>
@@ -9,65 +9,69 @@
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	input_ = Input::GetInstance();
 
-	// ˆø”‚©‚çó‚¯æ‚Á‚½ƒ‚ƒfƒ‹‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚é‚©ƒ`ƒFƒbƒN
+	// å¼•æ•°ã‹ã‚‰å—ã‘å–ã£ãŸãƒ¢ãƒ‡ãƒ«ãŒèª­ã¿è¾¼ã¾ã‚Œã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 	assert(model);
-	// ˆø”‚©‚çƒ‚ƒfƒ‹‚ÆƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹‚ğó‚¯æ‚é
+	// å¼•æ•°ã‹ã‚‰ãƒ¢ãƒ‡ãƒ«ã¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹
 	model_ = model;
 	textureHandle_ = textureHandle;
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šú‰»
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®åˆæœŸåŒ–
 	worldTransform_.Initialize();
 
-	// x,y,z•ûŒü‚ÌƒXƒP[ƒŠƒ“ƒO‚ğİ’è
+	// x,y,zæ–¹å‘ã®ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã‚’è¨­å®š
 	worldTransform_.scale_ = {5.0f, 1.0f, 1.0f};
-	// x,y,z•ûŒü‚Ì‰ñ“]‚ğİ’è
+	// x,y,zæ–¹å‘ã®å›è»¢ã‚’è¨­å®š
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	// x,y,z‚Ì•ûŒü‚ÌƒXƒP[ƒŠƒ“ƒO‚ğİ’è
+	// x,y,zã®æ–¹å‘ã®ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã‚’è¨­å®š
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 }
 
 void Player::Update() {
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®ƒxƒNƒgƒ‹
+
+	// æ—‹å›å‡¦ç†
+	Rotate();
+
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«
 	Vector3 move = {0, 0, 0};
 
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®‘¬‚³
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•é€Ÿã•
 	const float kCharacterSpeed = 0.2f;
 
-	// ‰Ÿ‚µ‚½•ûŒü‚ÅˆÚ“®ƒxƒNƒgƒ‹‚ğ•ÏX(¶‰E)
+	// æŠ¼ã—ãŸæ–¹å‘ã§ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´(å·¦å³)
 	if (input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_RIGHT)) {
 		move.x += kCharacterSpeed;
 	}
 
-	// ‰Ÿ‚µ‚½•ûŒü‚ÅˆÚ“®ƒxƒNƒgƒ‹‚ğ•ÏX(ã‰º)
+	// æŠ¼ã—ãŸæ–¹å‘ã§ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´(ä¸Šä¸‹)
 	if (input_->PushKey(DIK_UP)) {
 		move.y += kCharacterSpeed;
 	} else if (input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharacterSpeed;
 	}
 
-	// ˆÚ“®ŒÀŠEÀ•W
+	// ç§»å‹•é™ç•Œåº§æ¨™
 	const float kMoveLimitX = 30;
 	const float kMoveLimitY = 20;
 
-	// ”ÍˆÍ‚ğ’´‚¦‚È‚¢ˆ—
+	// ç¯„å›²ã‚’è¶…ãˆãªã„å‡¦ç†
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
 	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	// À•WˆÚ“®(ƒxƒNƒgƒ‹‚Ì‰ÁZ)
+	// åº§æ¨™ç§»å‹•(ãƒ™ã‚¯ãƒˆãƒ«ã®åŠ ç®—)
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
-	// s—ñ‚Ì“]‘—@s—ñ‚ÌŒvZŒã‚És‚¤
+	// è¡Œåˆ—ã®è»¢é€ã€€è¡Œåˆ—ã®è¨ˆç®—å¾Œã«è¡Œã†
 	worldTransform_.TransferMatrix();
 
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌÀ•W‚ğ‰æ–Ê•\¦‚·‚éˆ—
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®åº§æ¨™ã‚’ç”»é¢è¡¨ç¤ºã™ã‚‹å‡¦ç†
 	ImGui::Begin("Debug");
 	float playerPos[] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
@@ -78,8 +82,41 @@ void Player::Update() {
 	worldTransform_.translation_.x = playerPos[0];
 	worldTransform_.translation_.y = playerPos[1];
 	worldTransform_.translation_.z = playerPos[2];
+
+	//æ”»æ’ƒå‡¦ç†
+	Attack();
+
+	//å¼¾æ›´æ–°
+	if (bullet_) {
+		bullet_->Update();
+	}
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+void Player::Rotate() {
+	// å›è»¢é€Ÿã•[ãƒ©ã‚¸ã‚¢ãƒ³/frame]
+	const float kRotSpeed = 0.02f;
+
+	// æŠ¼ã—ãŸæ–¹å‘ã§ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´
+	if (input_->PushKey(DIK_A)) {
+		//WorldTransformã®Yè»¸ã¾ã‚ã‚Šè§’åº¦ã‚’å›è»¢é€Ÿã•åˆ†æ¸›ç®—ã™ã‚‹
+		worldTransform_.translation_.y -= kRotSpeed;
+	} else if(input_->PushKey(DIK_D)){
+		//WorldTransformã®Yè»¸ã¾ã‚ã‚Šè§’åº¦ã‚’å›è»¢é€Ÿã•åˆ†åŠ ç®—ã™ã‚‹
+		worldTransform_.translation_.y += kRotSpeed;
+	}
+}
+
+void Player::Attack() {
+	if (input_->PushKey(DIK_SPACE)) {
+	    //å¼¾ã‚’ç”Ÿæˆã—ã€åˆæœŸåŒ–
+		PlayerBullet* newBullet = new PlayerBullet();
+
+		//å¼¾ã‚’ç™»éŒ²ã™ã‚‹
+		bullet_ = newBullet;
+	}
+
 }
