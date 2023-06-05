@@ -109,10 +109,10 @@ void Player::Rotate() {
 	// 押した方向で移動ベクトルを変更
 	if (input_->PushKey(DIK_A)) {
 		//WorldTransformのY軸まわり角度を回転速さ分減算する
-		worldTransform_.translation_.y -= kRotSpeed;
+		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if(input_->PushKey(DIK_D)){
 		//WorldTransformのY軸まわり角度を回転速さ分加算する
-		worldTransform_.translation_.y += kRotSpeed;
+		worldTransform_.rotation_.y += kRotSpeed;
 	}
 }
 
