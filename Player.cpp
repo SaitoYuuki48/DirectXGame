@@ -6,6 +6,13 @@
 
 #include "Affine.h"
 
+Player::~Player() {
+	//bullet_の解放
+	for (PlayerBullet* bullet : bullets_) {
+		delete bullet;
+	}
+}
+
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	input_ = Input::GetInstance();
 
@@ -66,11 +73,6 @@ void Player::Update() {
 	worldTransform_.translation_.z += move.z;
 
 	// 行列の転送　行列の計算後に行う
-	/*worldTransform_.TransferMatrix();
-
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);*/
-
 	worldTransform_.UpdateMatrix();
 
 	// キャラクターの座標を画面表示する処理
@@ -89,16 +91,21 @@ void Player::Update() {
 	Attack();
 
 	//弾更新
-	if (bullet_) {
-		bullet_->Update();
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
 	}
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
+	//弾の描画
 	if (bullet_) {
 		bullet_->Draw(viewProjection);
+	}
+
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
 	}
 }
 
@@ -109,21 +116,21 @@ void Player::Rotate() {
 	// 押した方向で移動ベクトルを変更
 	if (input_->PushKey(DIK_A)) {
 		//WorldTransformのY軸まわり角度を回転速さ分減算する
-		worldTransform_.translation_.y -= kRotSpeed;
+		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if(input_->PushKey(DIK_D)){
 		//WorldTransformのY軸まわり角度を回転速さ分加算する
-		worldTransform_.translation_.y += kRotSpeed;
+		worldTransform_.rotation_.y += kRotSpeed;
 	}
 }
 
 void Player::Attack() {
-	if (input_->PushKey(DIK_SPACE)) {
-	    //弾を生成し、初期化
+	if (input_->TriggerKey(DIK_SPACE)) {
+		//弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_);
 
 		//弾を登録する
-		bullet_ = newBullet;
+		bullets_.push_back(newBullet);
 	}
 
 }

@@ -4,15 +4,21 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "PlayerBullet.h"
+#include <list>
 
 class Player {
 
 public:
+	~Player();
+
 	void Initialize(Model* model, uint32_t textureHandle);
 
 	void Update();
 
 	void Draw(ViewProjection& viewProjection);
+
+	//弾
+	std::list<PlayerBullet*> bullets_;
 
 private :
 	void Rotate();
