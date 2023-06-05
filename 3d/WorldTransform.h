@@ -4,7 +4,8 @@
 #include "Vector3.h"
 #include <d3d12.h>
 #include <wrl.h>
-#include "Affine.h"
+
+#include "Mt.h"
 
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
