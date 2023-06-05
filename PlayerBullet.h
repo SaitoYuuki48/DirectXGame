@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Input.h"
 #include "Model.h"
@@ -7,19 +7,19 @@
 class PlayerBullet {
 public:
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
-	/// <param name="model">ƒ‚ƒfƒ‹</param>
-	/// <param name="position">‰ŠúÀ•W</param>
+	/// <param name="model">ãƒ¢ãƒ‡ãƒ«</param>
+	/// <param name="position">åˆæœŸåº§æ¨™</param>
 	void Initialize(Model* model, const Vector3& position);
 
 	///<summary>
-	///XV
+	///æ›´æ–°
 	/// </summary>
 	void Update();
 
 	///< summary>
-	/// •`‰æ
+	/// æç”»
 	///  </summary>
 	/// <param name="viewPrejection& viewProjection
 	void Draw(const ViewProjection& viewProjection);
@@ -27,10 +27,10 @@ public:
 private:
 	//Input* input_ = nullptr;
 
-	// ƒ[ƒ‹ƒh•ÏŠ·ƒf[ƒ^
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ãƒ‡ãƒ¼ã‚¿
 	WorldTransform worldTransform_;
-	// ƒ‚ƒfƒ‹
+	// ãƒ¢ãƒ‡ãƒ«
 	Model* model_ = nullptr;
-	// ƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«
 	uint32_t textureHandle_ = 0u;
 };

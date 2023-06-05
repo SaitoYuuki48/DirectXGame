@@ -1,20 +1,23 @@
-#include "PlayerBullet.h"
+ï»¿#include "PlayerBullet.h"
 #include <assert.h>
 
 void PlayerBullet::Initialize(Model* model, const Vector3& position) {
-	//NULLƒ|ƒCƒ“ƒ^ƒ`ƒFƒbƒN
+	//NULLãƒã‚¤ãƒ³ã‚¿ãƒã‚§ãƒƒã‚¯
 	assert(model);
 
     model_ = model;
-	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Ý
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 
-	//ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šú‰»
-	//ˆø”‚ÅŽó‚¯Žæ‚Á‚½‰ŠúÀÊ‚ðƒZƒbƒg
-	worldTransform_.translation_ = ;
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®åˆæœŸåŒ–
+	worldTransform_.Initialize();
+	//å¼•æ•°ã§å—ã‘å–ã£ãŸåˆæœŸåº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
+	worldTransform_.translation_ = position;
 }
 
-void PlayerBullet::Update() {}
+void PlayerBullet::Update() { 
+	worldTransform_.UpdateMatrix();
+}
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);

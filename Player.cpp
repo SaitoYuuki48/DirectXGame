@@ -66,10 +66,12 @@ void Player::Update() {
 	worldTransform_.translation_.z += move.z;
 
 	// 行列の転送　行列の計算後に行う
-	worldTransform_.TransferMatrix();
+	/*worldTransform_.TransferMatrix();
 
 	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);*/
+
+	worldTransform_.UpdateMatrix();
 
 	// キャラクターの座標を画面表示する処理
 	ImGui::Begin("Debug");
@@ -94,6 +96,10 @@ void Player::Update() {
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 }
 
 void Player::Rotate() {
@@ -114,6 +120,7 @@ void Player::Attack() {
 	if (input_->PushKey(DIK_SPACE)) {
 	    //弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
 
 		//弾を登録する
 		bullet_ = newBullet;
