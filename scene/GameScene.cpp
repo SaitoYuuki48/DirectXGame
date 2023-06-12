@@ -18,8 +18,8 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("sample.png");
-
+	textureHandle_ = TextureManager::Load("kamata.ico");
+	
 	//// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	////モデル
@@ -29,6 +29,16 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	// 自キャラの初期化
 	player_->Initialize(model_, textureHandle_);
+
+	// 敵の速度
+	const float kEnemySpeed = 0.2f;
+	// 敵の移動
+	Vector3 velocity(kEnemySpeed, kEnemySpeed, kEnemySpeed);
+	Vector3 EnemyPosition = {0.0f, 0.0f, 40.0f};
+
+	// 敵キャラの生成
+	enemy_ = new Enemy();
+	enemy_->Initialize(model_, EnemyPosition, velocity);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -42,6 +52,10 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
+
+	// 敵キャラの更新
+	enemy_->Update();
+
 	// デバッグカメラ
 	debugCamera_->Update();
 
@@ -92,6 +106,9 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
+
+	// 敵キャラの描画
+	enemy_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
