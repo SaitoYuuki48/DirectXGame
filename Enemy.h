@@ -5,6 +5,7 @@
 #include "WorldTransform.h"
 
 class Enemy {
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -30,4 +31,7 @@ private: // 変数
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	// 速度
+	Vector3 velocity_;
 };
