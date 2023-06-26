@@ -31,10 +31,12 @@ void GameScene::Initialize() {
 	player_->Initialize(model_, textureHandle_);
 
 	// 敵の速度
-	const float kEnemySpeed = 0.2f;
+	const float kEnemySpeedX = 0.2f;
+	const float kEnemySpeedY = 0.2f;
+	const float kEnemySpeedZ = 0.2f;
 	// 敵の移動
-	Vector3 velocity(kEnemySpeed, kEnemySpeed, kEnemySpeed);
-	Vector3 EnemyPosition = {0.0f, 0.0f, 40.0f};
+	Vector3 velocity(kEnemySpeedX, kEnemySpeedY, kEnemySpeedZ);
+	Vector3 EnemyPosition = {20.0f, 0.0f, 40.0f};
 
 	// 敵キャラの生成
 	enemy_ = new Enemy();

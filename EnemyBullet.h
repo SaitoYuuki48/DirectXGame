@@ -3,17 +3,9 @@
 #include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include "EnemyBullet.h"
-#include <list>
 
-class Enemy {
-public:
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Enemy();
-
+class EnemyBullet {
+public: // 関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -32,28 +24,12 @@ public:
 	/// <param name="viewPrejection& viewProjection
 	void Draw(const ViewProjection& viewProjection);
 
-	// 弾
-	std::list<EnemyBullet*> bullets_;
-
-	//接近フェーズの初期化
-	void ApproachInit();
-
-public:
-	//発射間隔
-	static const int kFireInterval = 60;
-
-private:
-	// 接近する
-	void Approach();
-	// 離脱する
-	void Leave();
-
-	///< summary>
-	/// 弾発射
-	///  </summary>
-	void Fire();
+public: // 変数
+	bool IsDead() const { return isDead_; }
 
 private: // 変数
+	// Input* input_ = nullptr;
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -64,17 +40,11 @@ private: // 変数
 	// 速度
 	Vector3 velocity_;
 
-	enum class Phase {
-		Approach, // 接近する
-		Leave,    // 離脱する
-	};
+	// 寿命<frm>
+	static const int32_t kLifeTime = 10 * 5;
 
-	//フェーズ
-	Phase phase_ = Phase::Approach;
-
-	// 弾
-	EnemyBullet* bullet_ = nullptr;
-
-	//発射タイマー
-	int32_t fireTimer_ = 0;
+	// デスタイマー
+	int32_t deathTimer_ = kLifeTime;
+	// デスフラグ
+	bool isDead_ = false;
 };
