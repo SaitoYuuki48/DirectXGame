@@ -20,6 +20,9 @@ public:
 	//弾
 	std::list<PlayerBullet*> bullets_;
 
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 private :
 	void Rotate();
 
@@ -36,5 +39,5 @@ private:
 	uint32_t textureHandle_ = 0u;
 
 	//弾
-	PlayerBullet* bullet_ = nullptr;
+	//PlayerBullet* bullet_ = nullptr;
 };

@@ -1,5 +1,33 @@
 ﻿#include "Mt.h"
 
+//減算
+Vector3 Subtract(Vector3 v1, Vector3 v2) {
+	Vector3 result;
+	result.x = v1.x - v2.x;
+	result.y = v1.y - v2.y;
+	result.z = v1.z - v2.z;
+	return result;
+}
+
+//内積
+float Dot(Vector3 v1, Vector3 v2) {
+	float result;
+	result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+	return result;
+}
+
+//長さ(ノルム)
+float Length(const Vector3& v) { 
+	return sqrtf(Dot(v, v)); 
+}
+
+//正規化
+Vector3 Normalize(const Vector3& v) {
+	float length = Length(v);
+	assert(length != 0.0f);
+	return {v.x / length, v.y / length, v.z / length};
+}
+
 
 // X軸回転行列
 Matrix4x4 MakeRotateXmatrix(float radian) {
@@ -129,6 +157,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return result;
 }
 
+//行列の積
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
 	for (int i = 0; i < 4; i++) {

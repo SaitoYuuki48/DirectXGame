@@ -4,6 +4,18 @@
 #include <assert.h>
 #include <cmath>
 
+//減算
+Vector3 Subtract(Vector3 v1, Vector3 v2);
+
+// 内積
+float Dot(Vector3 v1, Vector3 v2);
+
+// 長さ(ノルム)
+float Length(const Vector3& v); 
+
+// 正規化
+Vector3 Normalize(const Vector3& v);
+
 // X軸回転行列
 Matrix4x4 MakeRotateXmatrix(float radian);
 

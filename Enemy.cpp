@@ -1,5 +1,6 @@
 ﻿#include "Enemy.h"
 #include <assert.h>
+#include "Player.h"
 
 Enemy::~Enemy() {
 	// bullet_の解放
@@ -102,15 +103,38 @@ void Enemy::Leave() {
 	// 移動(ベクトルを加算)
 	worldTransform_.translation_.x -= velocity_.x;
 	worldTransform_.translation_.y += velocity_.y;
+
+	// 発射タイマーカウントダウン
+	// 発射タイマーをデクリメント
+	fireTimer_--;
+	// 指定時間に達した
+	if (fireTimer_ == 30) {
+		// 弾を発射
+		Fire();
+		// 発射タイマーを初期化
+		fireTimer_ = kFireInterval;
+	}
 }
 
 void Enemy::Fire() {
-	// 弾の速度
-	const float kBulletSpeed = 1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	assert(player_);
 
-	// 速度ベクトルを自機の向きに合わせて回転させる
-	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	//// 弾の速度
+	//const float kBulletSpeed = 1.0f;
+    //Vector3 velocity(0, 0, kBulletSpeed);
+
+	//// 速度ベクトルを自機の向きに合わせて回転させる
+	//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+	//自キャラのワールド座標を取得する
+	Vector3 playerWorldPosition = player_->GetWorldPosition();
+	//敵キャラのワールド座標を取得する
+	Vector3 enemyWorldPosition = GetWorldPosition();
+	//敵キャラ→自キャラの差分ベクトルを求める
+	Vector3 subtractVector = Subtract(playerWorldPosition, enemyWorldPosition);
+	//ベクトルの正規化
+	Vector3 velocity = Normalize(subtractVector);
+	//ベクトルの長さを、早さに合わせる
 
 	// 弾を生成し、初期化
 	EnemyBullet* newBullet = new EnemyBullet();
@@ -118,4 +142,15 @@ void Enemy::Fire() {
 
 	// 弾を登録する
 	bullets_.push_back(newBullet);
+}
+
+Vector3 Enemy::GetWorldPosition() { 
+	//ワールド座標を入れる変数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得(ワールド座標)
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
 }

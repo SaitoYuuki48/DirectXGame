@@ -31,9 +31,9 @@ void GameScene::Initialize() {
 	player_->Initialize(model_, textureHandle_);
 
 	// 敵の速度
-	const float kEnemySpeedX = 0.2f;
-	const float kEnemySpeedY = 0.2f;
-	const float kEnemySpeedZ = 0.2f;
+	const float kEnemySpeedX = 0.1f;
+	const float kEnemySpeedY = 0.1f;
+	const float kEnemySpeedZ = 0.1f;
 	// 敵の移動
 	Vector3 velocity(kEnemySpeedX, kEnemySpeedY, kEnemySpeedZ);
 	Vector3 EnemyPosition = {20.0f, 0.0f, 40.0f};
@@ -41,6 +41,9 @@ void GameScene::Initialize() {
 	// 敵キャラの生成
 	enemy_ = new Enemy();
 	enemy_->Initialize(model_, EnemyPosition, velocity);
+
+	//敵キャラに自キャラのアドレスを渡す
+	enemy_->SetPlayer(player_);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
