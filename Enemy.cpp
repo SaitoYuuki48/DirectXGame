@@ -144,6 +144,8 @@ void Enemy::Fire() {
 	bullets_.push_back(newBullet);
 }
 
+void Enemy::OnCollision() {}
+
 Vector3 Enemy::GetWorldPosition() { 
 	//ワールド座標を入れる変数
 	Vector3 worldPos;

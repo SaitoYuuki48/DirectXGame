@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Enemy.h"
 
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -44,6 +45,12 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+private: //関数
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollisions();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -64,6 +71,12 @@ private: // メンバ変数
 
 	// 敵キャラ
 	Enemy* enemy_ = nullptr;
+
+	//自弾
+	PlayerBullet* playerBullet_ = nullptr;
+
+	// 敵弾
+	EnemyBullet* enemyBullet_ = nullptr;
 
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;

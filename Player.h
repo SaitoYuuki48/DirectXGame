@@ -23,6 +23,12 @@ public:
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	// 弾リストを追加
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+
+	// 衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
 private :
 	void Rotate();
 

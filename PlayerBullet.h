@@ -24,8 +24,18 @@ public: //関数
 	/// <param name="viewPrejection& viewProjection
 	void Draw(const ViewProjection& viewProjection);
 
+public:
+	// 衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 public:  //変数
 	bool IsDead() const { return isDead_; }
+
+private:
+	
 
 private: //変数
 	//Input* input_ = nullptr;
