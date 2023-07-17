@@ -12,6 +12,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "Skydome.h"
 
 
 /// <summary>
@@ -77,6 +78,12 @@ private: // メンバ変数
 
 	// 敵弾
 	EnemyBullet* enemyBullet_ = nullptr;
+
+	// 天球
+	Skydome* skydome_ = nullptr;
+
+	// 3Dモデル
+	Model* modelSkydome_ = nullptr;
 
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
