@@ -27,11 +27,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	// x,y,z方向の回転を設定
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	// x,y,zの方向のスケーリングを設定
+	// x,y,zの方向のを設定
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 }
 
 void Player::Update() {
+	worldTransform_.UpdateMatrix();
+
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {

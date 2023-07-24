@@ -24,6 +24,7 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("kamata.ico");
 	
 	//// ビュープロジェクションの初期化
+	viewProjection_.farZ = 150;
 	viewProjection_.Initialize();
 	////モデル
 	model_ = Model::Create();

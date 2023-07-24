@@ -8,14 +8,19 @@ void Skydome::Initialize(Model* model) {
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
-	//// ビュープロジェクションの初期化
-	viewProjection_.Initialize();
+
+	// x,y,z方向のスケーリングを設定
+	worldTransform_.scale_ = {100.0f, 100.0f, 100.0f};
+	// x,y,z方向の回転を設定
+	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
+	// x,y,zの方向のを設定
+	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 }
 
 void Skydome::Update() {
-
+	worldTransform_.UpdateMatrix();
 }
 
 void Skydome::Draw(const ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection_);
+	model_->Draw(worldTransform_, viewProjection);
 }
