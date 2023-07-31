@@ -12,6 +12,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete skydome_;
 	delete modelSkydome_;
+	delete railCamera_;
 }
 
 void GameScene::Initialize() {
@@ -23,8 +24,8 @@ void GameScene::Initialize() {
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("kamata.ico");
 	
-	//// ビュープロジェクションの初期化
-	viewProjection_.farZ = 150;
+	// ビュープロジェクションの初期化
+	viewProjection_.farZ = 600;
 	viewProjection_.Initialize();
 	////モデル
 	model_ = Model::Create();
@@ -32,7 +33,9 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_);
+	Vector3 playerPosition(0, 0, 50);
+	player_->Initialize(model_, textureHandle_, playerPosition);
+	
 
 	// 敵の速度
 	const float kEnemySpeedX = 0.1f;
@@ -59,6 +62,14 @@ void GameScene::Initialize() {
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
+	//レールカメラの生成
+	railCamera_ = new RailCamera();
+
+	railCamera_->Initialize();
+
+	// 自キャラとレールカメラの親子関係を結ぶ
+	player_->SetParent(&railCamera_->GetWorldTransform());
+
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
@@ -66,6 +77,38 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+	// レールカメラの生成
+	railCamera_->Update();
+
+	// デバッグカメラ
+	debugCamera_->Update();
+
+#ifdef _DEBUG
+	
+	if (input_->TriggerKey(DIK_C) && isDebugCameraActive_ == false) {
+		isDebugCameraActive_ = true;
+	} 
+
+	if (input_->TriggerKey(DIK_V) && isDebugCameraActive_ == true) {
+		isDebugCameraActive_ = false;
+	} 
+#endif // _DEBUG
+
+	// カメラの処理
+	if (isDebugCameraActive_ == true) {
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
+	} else {
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
+	}
+
+
 	// 自キャラの更新
 	player_->Update();
 
@@ -77,26 +120,6 @@ void GameScene::Update() {
 
 	// 衝突判定と応答
 	CheckAllCollisions();
-
-	// デバッグカメラ
-	debugCamera_->Update();
-
-#ifdef _DEBUG
-	if (input_->TriggerKey(DIK_C)) {
-		isDebugCameraActive_ = true;
-	}
-#endif // _DEBUG
-
-	// カメラの処理
-	if (isDebugCameraActive_) {
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-		// ビュープロジェクション行列の転送
-		viewProjection_.TransferMatrix();
-	} else {
-		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
-	}
 }
 
 void GameScene::Draw() {

@@ -31,6 +31,7 @@ Matrix4x4 MakeTranslateMatrix(Vector3 translate);
 // 拡大縮小
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
+//行列の積
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 // アフィン変換
@@ -38,3 +39,6 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vecto
 
 //ベクトル変換
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+
+// 逆行列
+Matrix4x4 Inverse(const Matrix4x4& m1);

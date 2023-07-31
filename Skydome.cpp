@@ -10,7 +10,7 @@ void Skydome::Initialize(Model* model) {
 	worldTransform_.Initialize();
 
 	// x,y,z方向のスケーリングを設定
-	worldTransform_.scale_ = {100.0f, 100.0f, 100.0f};
+	worldTransform_.scale_ = {500.0f, 500.0f, 500.0f};
 	// x,y,z方向の回転を設定
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
 	// x,y,zの方向のを設定

@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
+#include "RailCamera.h"
 
 
 /// <summary>
@@ -70,11 +71,11 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 
+	// 自弾
+	PlayerBullet* playerBullet_ = nullptr;
+
 	// 敵キャラ
 	Enemy* enemy_ = nullptr;
-
-	//自弾
-	PlayerBullet* playerBullet_ = nullptr;
 
 	// 敵弾
 	EnemyBullet* enemyBullet_ = nullptr;
@@ -89,6 +90,9 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
+
+	//レールカメラ
+	RailCamera* railCamera_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
