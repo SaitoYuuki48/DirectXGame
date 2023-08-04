@@ -9,6 +9,8 @@
 class Player {
 
 public:
+	Player();
+
 	~Player();
 
 	void Initialize(Model* model, uint32_t textureHandle, const Vector3& position);

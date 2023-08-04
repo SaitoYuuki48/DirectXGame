@@ -5,6 +5,8 @@
 
 #include "Mt.h"
 
+Player::Player() {}
+
 Player::~Player() {
 	//bullet_の解放
 	for (PlayerBullet* bullet : bullets_) {

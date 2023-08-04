@@ -9,8 +9,13 @@
 // 自機クラスの前方宣言
 class Player;
 
+// GameSceneの前方宣言(苦肉の策)
+class GameScene;
+
 class Enemy {
 public:
+
+	Enemy();
 
 	/// <summary>
 	/// デストラクタ
@@ -35,26 +40,17 @@ public:
 	/// <param name="viewPrejection& viewProjection
 	void Draw(const ViewProjection& viewProjection);
 
-	// 弾
-	std::list<EnemyBullet*> bullets_;
 
 	//接近フェーズの初期化
 	void ApproachInit();
 
 	void SetPlayer(Player* player) { player_ = player; }
 
-	// ワールド座標を取得
-	Vector3 GetWorldPosition();
-
-	// 弾リストを追加
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
-
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
 
-public:
-	//発射間隔
-	static const int kFireInterval = 60;
+	//ゲームシーンを敵に渡す
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 private:
 	// 接近する
@@ -66,6 +62,13 @@ private:
 	/// 弾発射
 	///  </summary>
 	void Fire();
+
+public:
+	// 発射間隔
+	static const int kFireInterval = 60;
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
 
 private: // 変数
 	// ワールド変換データ
@@ -97,4 +100,7 @@ private: // 変数
 
 	//敵キャラ
 	Enemy* enemy_ = nullptr;
+
+	// ゲームシーン
+	GameScene* gameScene_ = nullptr;
 };

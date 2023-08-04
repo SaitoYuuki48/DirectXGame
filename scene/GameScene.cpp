@@ -13,6 +13,10 @@ GameScene::~GameScene() {
 	delete skydome_;
 	delete modelSkydome_;
 	delete railCamera_;
+	// bullet_の解放
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		delete enemyBullet;
+	}
 }
 
 void GameScene::Initialize() {
@@ -176,6 +180,47 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
+void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
+	//リストに登録する
+	enemyBullets_.push_back(enemyBullet);
+}
+
+void GameScene::EnemySpawn() {
+	//初期化
+	
+	//敵キャラにゲームシーンを渡す
+	enemy_->SetGameScene(this);
+}
+
+void GameScene::EnemyBulletUpdate() {
+	// デスフラグの立った弾を削除
+	enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+		if (enemyBullet->IsDead()) {
+			delete enemyBullet;
+			return true;
+		}
+		return false;
+	});
+
+	// 弾更新
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		enemyBullet->Update();
+	}
+}
+
+void GameScene::EnemyBulletDraw(const ViewProjection& viewProjection) {
+	// 弾の描画
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		enemyBullet->Draw(viewProjection);
+	}
+}
+
+void GameScene::EnemyBulletFire() { 
+
+
+	enemyBullets_.push_back(newBullet);
+}
+
 /// <summary>
 /// 衝突判定と応答
 /// </summary>
@@ -186,7 +231,7 @@ void GameScene::CheckAllCollisions() {
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	//敵弾リストの取得
-	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+	const std::list<EnemyBullet*>& enemyBullets = GetBullets();
 
 	#pragma region 自キャラと敵弾の当たり判定
 	//自キャラの座標

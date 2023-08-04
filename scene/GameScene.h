@@ -47,11 +47,37 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+public:  // メンバ関数
+/// <summary>
+/// 敵弾を追加する
+/// </summary>
+/// <param name="enemyBullet">敵弾</param>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
+	/// <summary>
+	/// 敵の発生
+	/// </summary>
+	void EnemySpawn();
+
+	void EnemyBulletUpdate();
+
+	void EnemyBulletDraw(const ViewProjection& viewProjection);
+
+	void EnemyBulletFire();
+
 private: //関数
+
 	/// <summary>
 	/// 衝突判定と応答
 	/// </summary>
 	void CheckAllCollisions();
+
+public:
+	// 弾
+	std::list<EnemyBullet*> enemyBullets_;
+
+	// 弾リストを追加
+	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
