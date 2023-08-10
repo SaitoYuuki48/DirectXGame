@@ -9,6 +9,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
+#include <sstream>
 
 #include "Player.h"
 #include "Enemy.h"
@@ -57,13 +58,17 @@ public:  // メンバ関数
 	/// <summary>
 	/// 敵の発生
 	/// </summary>
-	void EnemySpawn();
+	void EnemySpawn(Vector3 position, Vector3 velocity);
 
-	void EnemyBulletUpdate();
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
 
-	void EnemyBulletDraw(const ViewProjection& viewProjection);
-
-	void EnemyBulletFire();
+   /// <summary>
+   /// 敵発生コマンドの更新
+   /// </summary>
+	void UpdateEnemyPopCommands();
 
 private: //関数
 
@@ -76,8 +81,11 @@ public:
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;
 
-	// 弾リストを追加
-	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
+	// 敵リスト
+	std::list<Enemy*> enemys_;
+
+	// 敵発生コマンド
+	std::stringstream enemyPopCommands;
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -119,6 +127,11 @@ private: // メンバ変数
 
 	//レールカメラ
 	RailCamera* railCamera_ = nullptr;
+
+	//敵の待機中のフラグ
+	bool enemyPopWaitFlag = true;
+	//待機タイマー
+	float enemyPopWaitTimer = 0;
 
 	/// <summary>
 	/// ゲームシーン用

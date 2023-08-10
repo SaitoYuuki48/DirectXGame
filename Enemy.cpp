@@ -1,6 +1,7 @@
 ﻿#include "Enemy.h"
 #include <assert.h>
 #include "Player.h"
+#include "GameScene.h"
 
 Enemy::Enemy() {}
 
@@ -139,7 +140,7 @@ void Enemy::Fire() {
 
 	// 弾を登録する
 	//bullets_.push_back(newBullet);
-	gameScene_->Add
+	gameScene_->AddEnemyBullet(newBullet);
 }
 
 void Enemy::OnCollision() {}

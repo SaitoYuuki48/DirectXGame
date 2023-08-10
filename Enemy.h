@@ -70,6 +70,7 @@ public:
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+
 private: // 変数
 	// ワールド変換データ
 	WorldTransform worldTransform_;
