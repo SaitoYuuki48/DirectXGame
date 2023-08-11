@@ -46,11 +46,11 @@ void RailCamera::Update() {
 	ImGui::End();
 
 	//ビュープロジェクションの位置
-	ImGui::Begin("viewProjection");
+	/*ImGui::Begin("viewProjection");
 	float viewProjectionPos[] = {
 	    viewProjection_.translation_.x, 
 		viewProjection_.translation_.y,
 	    viewProjection_.translation_.z};
 	ImGui::SliderFloat3("viewProjection", viewProjectionPos, 0.0f, 128.0f);
-	ImGui::End();
+	ImGui::End();*/
 }
