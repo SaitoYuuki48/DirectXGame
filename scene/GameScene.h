@@ -128,10 +128,10 @@ private: // メンバ変数
 	//レールカメラ
 	RailCamera* railCamera_ = nullptr;
 
-	//敵の待機中のフラグ
+	// 敵の待機中のフラグ
 	bool enemyPopWaitFlag = true;
-	//待機タイマー
-	float enemyPopWaitTimer = 0;
+	// 待機タイマー
+	int32_t enemyPopWaitTimer = 0;
 
 	/// <summary>
 	/// ゲームシーン用

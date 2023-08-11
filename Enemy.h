@@ -97,11 +97,8 @@ private: // 変数
 	int32_t fireTimer_ = 0;
 
 	//自キャラ
-	Player* player_ = nullptr;
-
-	//敵キャラ
-	Enemy* enemy_ = nullptr;
+	Player* player_;
 
 	// ゲームシーン
-	GameScene* gameScene_ = nullptr;
+	GameScene* gameScene_;
 };

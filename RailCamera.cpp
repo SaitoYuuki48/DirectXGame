@@ -19,9 +19,9 @@ void RailCamera::Update() {
 	// 座標を移動させる(1フレーム分の移動量を足しこむ)
 	//worldTransform_.translation_.x += velocity_.x;
 	//worldTransform_.translation_.y += velocity_.y;
-	//worldTransform_.translation_.z += kCameraSpeed;
+	worldTransform_.translation_.z += kCameraSpeed;
 
-	worldTransform_.rotation_.y += kCameraSpeed;
+	//worldTransform_.rotation_.z += kCameraSpeed;
 
 	worldTransform_.matWorld_ = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, worldTransform_.rotation_, worldTransform_.translation_);
 
