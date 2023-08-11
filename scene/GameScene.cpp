@@ -32,6 +32,9 @@ void GameScene::Initialize() {
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("kamata.ico");
+
+	//レティクルのテクスチャ
+	TextureManager::Load("reticle.png");
 	
 	// ビュープロジェクションの初期化
 	viewProjection_.farZ = 600;
@@ -44,22 +47,7 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	Vector3 playerPosition(0, 0, 50);
 	player_->Initialize(model_, textureHandle_, playerPosition);
-	
 
-	// 敵の速度
-	const float kEnemySpeedX = 0.1f;
-	const float kEnemySpeedY = 0.1f;
-	const float kEnemySpeedZ = 0.1f;
-	// 敵の移動
-	Vector3 velocity(kEnemySpeedX, kEnemySpeedY, kEnemySpeedZ);
-	Vector3 EnemyPosition = {20.0f, 0.0f, 40.0f};
-
-	// 敵キャラの生成
-	//enemy_ = new Enemy();
-	//enemy_->Initialize(model_, EnemyPosition, velocity);
-
-	//敵キャラに自キャラのアドレスを渡す
-	//enemy_->SetPlayer(player_);
 
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
@@ -136,7 +124,7 @@ void GameScene::Update() {
 
 
 	// 自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	// 敵キャラの更新
 	//enemy_->Update();
@@ -206,6 +194,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -355,7 +344,7 @@ void GameScene::CheckAllCollisions() {
 			// 自弾の座標
 			posB = bullet->GetWorldPosition();
 
-			float radius1 = 3;
+			float radius1 = 2;
 			float radius2 = 1;
 
 			float hit = (posB.x - posA.x) * (posB.x - posA.x) +
