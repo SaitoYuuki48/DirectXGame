@@ -88,7 +88,7 @@ void Enemy::Approach() {
 	//発射タイマーをデクリメント
 	fireTimer_--;
 	//指定時間に達した
-	if (fireTimer_ == 60)
+	if (fireTimer_ <= 0)
 	{
 		//弾を発射
 		Fire();
@@ -106,7 +106,7 @@ void Enemy::Leave() {
 	// 発射タイマーをデクリメント
 	fireTimer_--;
 	// 指定時間に達した
-	if (fireTimer_ == 30) {
+	if (fireTimer_ <= 0) {
 		// 弾を発射
 		Fire();
 		// 発射タイマーを初期化
