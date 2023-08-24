@@ -76,21 +76,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	// 敵キャラの更新
-	UpdateEnemyPopCommands();
-	// デスフラグの立った弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* bullet) {
-	    if (bullet->IsDead()) {
-	        delete bullet;
-	        return true;
-	    }
-	    return false;
-	});
-
-	// 弾更新
-	 for (EnemyBullet* bullet : enemyBullets_) {
-		bullet->Update();
-	 }
+	
 
 	// レールカメラの生成
 	railCamera_->Update();
@@ -127,9 +113,17 @@ void GameScene::Update() {
 	player_->Update(viewProjection_);
 
 	// 敵キャラの更新
+	UpdateEnemyPopCommands();
+
+	// 敵キャラの更新
 	//enemy_->Update();
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
+	}
+
+	// 弾更新
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Update();
 	}
 
 	// 天球の更新
@@ -137,6 +131,15 @@ void GameScene::Update() {
 
 	// 衝突判定と応答
 	CheckAllCollisions();
+
+	// デスフラグの立った弾を削除
+	enemyBullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 }
 
 void GameScene::Draw() {
