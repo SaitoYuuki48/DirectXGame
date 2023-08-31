@@ -35,7 +35,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("kamata.ico");
+	textureHandle_ = TextureManager::Load("player.png");
 
 	//レティクルのテクスチャ
 	TextureManager::Load("reticle.png");
