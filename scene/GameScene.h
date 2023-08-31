@@ -163,6 +163,8 @@ private: // メンバ変数
 	// クリア用スプライト
 	Sprite* spriteGameover_ = nullptr;
 
+	Sprite* spriteControl_ = nullptr;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

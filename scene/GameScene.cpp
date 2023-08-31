@@ -98,6 +98,12 @@ void GameScene::Initialize() {
 	spriteGameover_ =
 	    Sprite::Create(textureGameover, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f});
 
+	//操作
+	uint32_t textureControl = TextureManager::Load("control.png");
+
+	spriteControl_ =
+	    Sprite::Create(textureControl, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f});
+
 	isSceneEnd = false;
 
 	playerHp_ = kPlayerHp_;
@@ -262,6 +268,8 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 	player_->DrawUI();
+
+	spriteControl_->Draw();
 
 	if (playerHp_ <= 0) {
 		spriteGameover_->Draw();
