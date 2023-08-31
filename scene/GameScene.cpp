@@ -10,6 +10,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	delete player_;
+	delete modelPlayer_;
 	//delete enemy_;
 	for (Enemy* enemy : enemys_) {
 		delete enemy;
@@ -22,6 +23,9 @@ GameScene::~GameScene() {
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
 		delete enemyBullet;
 	}
+	delete spriteClear_;
+	delete spriteGameover_;
+	delete modelExplosion_;
 }
 
 void GameScene::Initialize() {
@@ -42,12 +46,15 @@ void GameScene::Initialize() {
 	////モデル
 	model_ = Model::Create();
 
+	modelPlayer_ = Model::Create();
+
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
 	Vector3 playerPosition(0, 0, 50);
-	player_->Initialize(model_, textureHandle_, playerPosition);
+	player_->Initialize(modelPlayer_, textureHandle_, playerPosition);
 
+	modelExplosion_ = Model::CreateFromOBJ("explosion", true);
 
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
@@ -67,12 +74,36 @@ void GameScene::Initialize() {
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
+#ifdef _DEBUG
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	
+#endif // _DEBUG
 
 	LoadEnemyPopData();
+
+	// クリア用テクスチャ
+	uint32_t textureClear = TextureManager::Load("clear.png");
+
+	//　クリアスプライト生成
+	spriteClear_ =
+	    Sprite::Create(textureClear, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f});
+
+	// ゲームオーバー用テクスチャ
+	uint32_t textureGameover = TextureManager::Load("gameover.png");
+
+	// ゲームオーバースプライト生成
+	spriteGameover_ =
+	    Sprite::Create(textureGameover, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f});
+
+	isSceneEnd = false;
+
+	playerHp_ = kPlayerHp_;
+	enemyNumber_ = kEnemyNumber_;
+
+	explosionTimer_ = explosionTimer;
 }
 
 void GameScene::Update() {
@@ -107,14 +138,14 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 	}
 
-	// 敵キャラの更新
-	UpdateEnemyPopCommands();
-
 	// 自キャラの更新
 	player_->Update(viewProjection_);
 
+	
 	// 敵キャラの更新
-	//enemy_->Update();
+	UpdateEnemyPopCommands();
+
+	// 敵キャラの更新
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
 	}
@@ -123,6 +154,15 @@ void GameScene::Update() {
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Update();
 	}
+
+	// デスフラグ
+	enemys_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
 
 	// 天球の更新
 	skydome_->Update();
@@ -138,6 +178,18 @@ void GameScene::Update() {
 		}
 		return false;
 	});
+
+	if (playerHp_ <= 0) {
+		if (input_->TriggerKey(DIK_RETURN)) {
+			isSceneEnd = true;
+		}
+	}
+
+	if (enemyNumber_ <= 0) {
+		if (input_->TriggerKey(DIK_RETURN)) {
+			isSceneEnd = true;
+		}
+	}
 }
 
 void GameScene::Draw() {
@@ -172,13 +224,27 @@ void GameScene::Draw() {
 
 	// 敵キャラの描画
 	//enemy_->Draw(viewProjection_);
-	for (Enemy* enemy : enemys_) {
-		enemy->Draw(viewProjection_);
+	if (enemyNumber_ >= 0) {
+		for (Enemy* enemy : enemys_) {
+			enemy->Draw(viewProjection_);
+		}
+
+		// 弾の描画
+		for (EnemyBullet* bullet : enemyBullets_) {
+			bullet->Draw(viewProjection_);
+		}
 	}
 
-	// 弾の描画
-	for (EnemyBullet* bullet : enemyBullets_) {
-	    bullet->Draw(viewProjection_);
+	for (Enemy* enemy : enemys_) {
+		if (enemy->IsDead()) {
+			explosionTimer_--;
+			if (explosionTimer_ >= 0) {
+				enemy->DrawExplosion(viewProjection_);	
+			}
+			if (explosionTimer_ <= 0) {
+				explosionTimer_ = explosionTimer;
+			}
+		}
 	}
 
 	// 天球の描画
@@ -197,6 +263,14 @@ void GameScene::Draw() {
 	/// </summary>
 	player_->DrawUI();
 
+	if (playerHp_ <= 0) {
+		spriteGameover_->Draw();
+	}
+	
+	if (enemyNumber_ <= 0) {
+		spriteClear_->Draw();
+	}
+	
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
@@ -211,7 +285,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 void GameScene::EnemySpawn(Vector3 position, Vector3 velocity) {
 	Enemy* enemy = new Enemy();
 	// 初期化
-	enemy->Initialize(model_, position, velocity);
+	enemy->Initialize(model_, modelExplosion_, position, velocity);
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy->SetPlayer(player_);
 	//敵キャラにゲームシーンを渡す
@@ -278,7 +352,7 @@ void GameScene::UpdateEnemyPopCommands() {
 			float z = (float)std::atof(word.c_str());
 
 			//敵を発生させる
-			EnemySpawn(Vector3(x, y, z), {0.0f, 0.0f, 0.0f});
+			EnemySpawn(Vector3(x, y, z), {0.0f, 0.0f, 0.2f});
 		}
 		//WAITコマンド
 		else if (word.find("WAIT") == 0) {
@@ -331,6 +405,9 @@ void GameScene::CheckAllCollisions() {
 			player_->OnCollision();
 			//敵弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
+
+			//　自キャラの体力を減らす
+			playerHp_--;
 		}
 	}
 	#pragma endregion
@@ -361,6 +438,9 @@ void GameScene::CheckAllCollisions() {
 		
 				// 自弾の衝突時コールバックを呼び出す
 				bullet->OnCollision();
+
+				//敵の残りの数値を減らす
+				enemyNumber_--;
 			}
 		}
 	}

@@ -27,7 +27,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="position">初期座標</param>
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+	void Initialize(Model* model, Model* modelExplosion, const Vector3& position, const Vector3& velocity);
 
 	///< summary>
 	/// 更新
@@ -40,6 +40,7 @@ public:
 	/// <param name="viewPrejection& viewProjection
 	void Draw(const ViewProjection& viewProjection);
 
+	void DrawExplosion(const ViewProjection& viewProjection);
 
 	//接近フェーズの初期化
 	void ApproachInit();
@@ -70,6 +71,7 @@ public:
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	bool IsDead() const { return isDead_; }
 
 private: // 変数
 	// ワールド変換データ
@@ -101,4 +103,9 @@ private: // 変数
 
 	// ゲームシーン
 	GameScene* gameScene_;
+
+	// デスフラグ
+	bool isDead_ = false;
+
+	Model* modelExplosion_ = nullptr;
 };

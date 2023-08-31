@@ -5,20 +5,19 @@
 
 Enemy::Enemy() {}
 
-Enemy::~Enemy() {
-	// bullet_の解放
-	/*for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}*/
-}
+Enemy::~Enemy() {}
 
-void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+void Enemy::Initialize(Model* model, Model* modelExplosion, const Vector3& position, const Vector3& velocity)
+{
 	// 引数から受け取ったモデルが読み込まれているかチェック
 	assert(model);
 
 	model_ = model;
+
+	modelExplosion_ = modelExplosion;
+
 	// テクスチャ読み込み
-	textureHandle_ = TextureManager::Load("debugfont.png");
+	textureHandle_ = TextureManager::Load("enemy.png");
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -35,14 +34,6 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 }
 
 void Enemy::Update() {
-	// デスフラグの立った弾を削除
-	/*bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});*/
 
 	// ワールド行列の更新
 	worldTransform_.UpdateMatrix();
@@ -56,19 +47,14 @@ void Enemy::Update() {
 		break;
 	}
 
-	//// 弾更新
-	//for (EnemyBullet* bullet : bullets_) {
-	//	bullet->Update();
-	//}
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
 
-	// 弾の描画
-	/*for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}*/
+void Enemy::DrawExplosion(const ViewProjection& viewProjection) {
+	modelExplosion_->Draw(worldTransform_, viewProjection);
 }
 
 void Enemy::ApproachInit() {
@@ -80,7 +66,7 @@ void Enemy::Approach() {
 	// 移動(ベクトルを加算)
 	worldTransform_.translation_.z -= velocity_.z;
 	// 規定の位置に到達したら離脱
-	if (worldTransform_.translation_.z < 0.0f) {
+	if (worldTransform_.translation_.z < 10.0f) {
 		phase_ = Phase::Leave;
 	}
 
@@ -99,8 +85,11 @@ void Enemy::Approach() {
 
 void Enemy::Leave() {
 	// 移動(ベクトルを加算)
-	worldTransform_.translation_.x -= velocity_.x;
-	worldTransform_.translation_.y += velocity_.y;
+	worldTransform_.translation_.z += velocity_.z;
+	
+	if (worldTransform_.translation_.z > 100.0f) {
+		phase_ = Phase::Leave;
+	}
 
 	// 発射タイマーカウントダウン
 	// 発射タイマーをデクリメント
@@ -116,13 +105,6 @@ void Enemy::Leave() {
 
 void Enemy::Fire() {
 	assert(player_);
-
-	//// 弾の速度
-	//const float kBulletSpeed = 1.0f;
-    //Vector3 velocity(0, 0, kBulletSpeed);
-
-	//// 速度ベクトルを自機の向きに合わせて回転させる
-	//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
 	//自キャラのワールド座標を取得する
 	Vector3 playerWorldPosition = player_->GetWorldPosition();
@@ -143,7 +125,7 @@ void Enemy::Fire() {
 	gameScene_->AddEnemyBullet(newBullet);
 }
 
-void Enemy::OnCollision() {}
+void Enemy::OnCollision() { isDead_ = true; }
 
 Vector3 Enemy::GetWorldPosition() { 
 	//ワールド座標を入れる変数

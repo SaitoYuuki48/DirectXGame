@@ -14,12 +14,12 @@ void RailCamera::Initialize() {
 
 void RailCamera::Update() {
 	// カメラの速さ
-	const float kCameraSpeed = 0.02f;
+	//const float kCameraSpeed = 0.02f;
 
 	// 座標を移動させる(1フレーム分の移動量を足しこむ)
 	//worldTransform_.translation_.x += velocity_.x;
 	//worldTransform_.translation_.y += velocity_.y;
-	worldTransform_.translation_.z += kCameraSpeed;
+	//worldTransform_.translation_.z += kCameraSpeed;
 
 	//worldTransform_.rotation_.z += kCameraSpeed;
 
@@ -30,27 +30,25 @@ void RailCamera::Update() {
 
 	
 	//カメラの座標を画面表示する処理
+
+#ifdef _DEBUG
 	ImGui::Begin("Camera");
 	float cameraPos[] = {
-	    worldTransform_.translation_.x, 
-		worldTransform_.translation_.y,
-	    worldTransform_.translation_.z
-	};
+	    worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z};
 	ImGui::SliderFloat3("cameraPos", cameraPos, 0.0f, 128.0f);
 	float cameraRot[] = {
-	    worldTransform_.rotation_.x,
-		worldTransform_.rotation_.y,
-		worldTransform_.rotation_.z
-	};
+	    worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z};
 	ImGui::SliderFloat3("cameraRot", cameraRot, -128.0f, 128.0f);
 	ImGui::End();
 
-	//ビュープロジェクションの位置
+	// ビュープロジェクションの位置
 	ImGui::Begin("viewProjection");
 	float viewProjectionPos[] = {
-	    viewProjection_.translation_.x, 
-		viewProjection_.translation_.y,
+	    viewProjection_.translation_.x, viewProjection_.translation_.y,
 	    viewProjection_.translation_.z};
 	ImGui::SliderFloat3("viewProjection", viewProjectionPos, 0.0f, 128.0f);
 	ImGui::End();
+#endif // _DEBUG
+	
 }

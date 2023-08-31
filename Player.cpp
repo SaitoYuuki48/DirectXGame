@@ -100,6 +100,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	// ワールド行列の更新
 	worldTransform_.UpdateMatrix();
 
+#ifdef _DEBUG
 	// キャラクターの座標を画面表示する処理
 	ImGui::Begin("Debug");
 	float playerPos[] = {
@@ -111,6 +112,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	worldTransform_.translation_.x = playerPos[0];
 	worldTransform_.translation_.y = playerPos[1];
 	worldTransform_.translation_.z = playerPos[2];
+#endif // _DEBUG
 
 	// 攻撃処理
 	Attack();

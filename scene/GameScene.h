@@ -15,6 +15,7 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "RailCamera.h"
+#include "Scene.h"
 
 
 /// <summary>
@@ -78,6 +79,12 @@ private: //関数
 	void CheckAllCollisions();
 
 public:
+	bool isSceneEnd = false;
+
+	bool IsSceneEnd() { return isSceneEnd; }
+	SceneType NextScene() { return SceneType::kTitle; }
+
+public:
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;
 
@@ -108,11 +115,28 @@ private: // メンバ変数
 	// 自弾
 	PlayerBullet* playerBullet_ = nullptr;
 
+	static const int32_t kPlayerHp_ = 5;
+	//自キャラの体力
+	int32_t playerHp_ = kPlayerHp_;
+
+	Model* modelPlayer_ = nullptr;
+
 	// 敵キャラ
 	Enemy* enemy_ = nullptr;
 
 	// 敵弾
 	EnemyBullet* enemyBullet_ = nullptr;
+
+	static const int32_t kEnemyNumber_ = 5;
+	// 敵の数
+	int32_t enemyNumber_ = kEnemyNumber_;
+
+	// 3Dモデル 爆発
+	Model* modelExplosion_ = nullptr;
+
+	static const int32_t explosionTimer = 120;
+
+	int32_t explosionTimer_ = explosionTimer;
 
 	// 天球
 	Skydome* skydome_ = nullptr;
@@ -132,6 +156,12 @@ private: // メンバ変数
 	bool enemyPopWaitFlag = true;
 	// 待機タイマー
 	int32_t enemyPopWaitTimer = 0;
+
+	// クリア用スプライト
+	Sprite* spriteClear_ = nullptr;
+
+	// クリア用スプライト
+	Sprite* spriteGameover_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
