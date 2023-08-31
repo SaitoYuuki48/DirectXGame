@@ -49,10 +49,10 @@ void TitleScene::Draw() {
 	spriteTimer_--;
 
 	if (spriteTimer_ == 0) {
-		spriteTimer_ = 8;
+		spriteTimer_ = 30;
 	}
 
-	if (spriteTimer_ <= 8 && spriteTimer_ >= 4)	{
+	if (spriteTimer_ <= 30 && spriteTimer_ >= 15)	{
 		spriteEnter_->Draw();
 	}
 

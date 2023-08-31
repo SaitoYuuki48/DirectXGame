@@ -59,5 +59,5 @@ private: // メンバ変数
 
 	Sprite* spriteEnter_ = nullptr;
 
-	int32_t spriteTimer_ = 8;
+	int32_t spriteTimer_ = 30;
 };
